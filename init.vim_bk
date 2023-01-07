@@ -1,0 +1,298 @@
+call plug#begin('~/.vim/plugged') " Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'tomtom/tcomment_vim'
+Plug 'tpope/vim-fugitive'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'masukomi/vim-markdown-folding'
+Plug 'preservim/nerdtree'
+Plug 'jackguo380/vim-lsp-cxx-highlight'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'Konfekt/FastFold'
+Plug 'kalekundert/vim-coiled-snake'
+Plug 'lervag/vimtex'
+Plug 'tpope/vim-sleuth'
+
+Plug 'tyru/open-browser.vim'
+Plug 'tyru/open-browser-github.vim'
+
+Plug 'neovim/nvim-lspconfig'
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'windwp/nvim-autopairs'
+Plug 'ray-x/lsp_signature.nvim'
+
+" new stuff for lua 
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-lua/completion-nvim'
+
+" proper color for treesitter
+Plug 'rktjmp/lush.nvim'
+Plug 'sainnhe/gruvbox-material'
+
+" git gutter / quick view of changes live in file
+Plug 'nvim-lua/plenary.nvim'
+Plug 'lewis6991/gitsigns.nvim'
+
+" diagnostic window
+Plug 'folke/trouble.nvim'
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'ryanoasis/vim-devicons'
+call plug#end()
+
+" custom configuration
+set number
+set noswapfile
+set hidden
+set termguicolors
+set encoding=UTF-8
+set cursorline
+set scrolloff=10
+set colorcolumn=120
+
+set ttimeoutlen=5
+
+let g:netrw_menu=0
+let g:netrw_liststyle = 3
+let g:netrw_banner = 0
+let g:netrw_browse_split = 3
+let g:netrw_winsize = 25
+let mapleader = "\<Space>"
+
+
+"au ColorScheme * hi Normal ctermbg=none guibg=none
+"au ColorScheme myspecialcolors hi Normal ctermbg=red guibg=red
+
+" copy to system clipboard
+vmap <leader>y "+y
+
+augroup split_help
+  autocmd!
+  autocmd VimResized * wincmd = " Automatically equalize splits when resized
+augroup END
+
+" navigate windows with just ctrl+<direction>
+nmap <C-h> <C-w>h
+nmap <C-j> <C-w>j
+nmap <C-k> <C-w>k
+nmap <C-l> <C-w>l
+
+nmap <leader>o <cmd>OpenGithubFile<cr>
+xnoremap <Leader>o <esc>:'<,'> OpenGithubFile<CR>
+
+" nerd tree
+nmap <C-n> :NERDTreeToggle<CR>
+let g:NERDTreeMapJumpNextSibling = '<Nop>'
+let g:NERDTreeMapJumpPrevSibling = '<Nop>'
+let NERDTreeIgnore = ['.pyc$', '.egg-info$', '^__pycache__']
+let g:NERDTreeMinimalMenu=1
+
+" vue syntax
+let g:vim_vue_plugin_load_full_syntax = 1
+
+" fix syntax breaking when scrolling
+autocmd BufEnter * :syntax sync fromstart
+
+" tab indentation
+set sts=2
+set ts=2
+set sw=2
+
+" comment this to use tabs instead of spaces
+" set expandtab
+"set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
+set list
+
+" simply fold
+let g:SimplyFold_docstring_preview = 1
+let g:SimplyFold_import = 1
+
+" folds
+set foldmethod=indent
+set nofoldenable
+set foldlevel=2
+set foldopen-=block
+
+
+" Tree-sitter configuration
+
+lua <<EOF
+local nvim_lsp = require('lspconfig')
+
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+  -- Enable completion triggered by <c-x><c-o>
+  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings.
+  local opts = { noremap=true, silent=true }
+
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', '<space>k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', '<space>af', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '<ctrl>p', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', '<ctrl>n', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  buf_set_keymap('n', '<space>cf', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+end
+
+-- Use a loop to conveniently call 'setup' on multiple servers and
+-- map buffer local keybindings when the language server attaches
+local servers = { 'jsonls', 'tsserver', 'vuels', 'html', 'yamlls', 'pyright', 'gopls', 'rust_analyzer'}
+for _, lsp in ipairs(servers) do
+  nvim_lsp[lsp].setup {
+    on_attach = on_attach,
+    flags = {
+      debounce_text_changes = 150,
+    }
+  }
+end
+
+-- TODO: Enable me for html pages
+require'lspconfig'.vuels.setup{on_attach=on_attach}
+-- require'lspconfig'.html.setup {
+-- 	on_attach=custom_lsp_attach,
+--   capabilities = capabilities,
+-- }
+
+
+-- vim.o.completeopt = 'menuone, noselect'
+
+local cmp = require'cmp'
+cmp.setup({
+	snippet = {
+		expand = function(args)
+			vim.fn["vsnip#anonymous"](args.body)
+		end,
+	},
+	mapping = {
+		['<C-d>'] = cmp.mapping.scroll_docs(-4),
+		['<C-f>'] = cmp.mapping.scroll_docs(4),
+		['<C-Space>'] = cmp.mapping.complete(),
+		['<C-e>'] = cmp.mapping.close(),
+		['<CR>'] = cmp.mapping.confirm({
+			behavior = cmp.ConfirmBehavior.Replace,
+			select = true,
+		})
+	},
+	sources = {
+		{ name = 'nvim_lua' },
+		-- { name = 'buffer' },
+		{ name = 'nvim_lsp' }
+	}
+})
+
+
+require'nvim-treesitter.configs'.setup {
+  highlight = {
+    enable = true,
+		indent = {
+			enable = true
+		}
+  },
+}
+
+-- require('lsp_signature').setup()
+require("trouble").setup()
+require('gitsigns').setup()
+require('nvim-autopairs').setup{}
+EOF
+
+" Use <Tab> and <S-Tab> to navigate through popup menu
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" Set completeopt to have a better completion experience
+set completeopt=menuone,noinsert,noselect
+
+" Avoid showing message extra message when using completion
+set shortmess+=c
+
+" trouble configuration
+nnoremap <leader>xx <cmd>TroubleToggle<cr>
+nnoremap <leader>xw <cmd>TroubleToggle lsp_workspace_diagnostics<cr>
+nnoremap <leader>xd <cmd>TroubleToggle lsp_document_diagnostics<cr>
+nnoremap <leader>xq <cmd>TroubleToggle quickfix<cr>
+nnoremap <leader>xl <cmd>TroubleToggle loclist<cr>
+nnoremap gR <cmd>TroubleToggle lsp_references<cr>
+
+" Telescope configuration
+nnoremap <leader>ff <cmd>Telescope find_files<cr>
+nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+nnoremap <leader>fb <cmd>Telescope buffers<cr>
+nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+
+"TelescopePrompt
+
+" set foldmethod=expr
+set foldexpr=nvim_treesitter#foldexpr()
+
+set background=dark
+let g:gruvbox_material_background = 'hard'
+let g:gruvbox_material_better_performance = 1
+colorscheme gruvbox-material
+syntax on
+
+" Configure FZF
+let g:rg_highlight = 1
+nnoremap <silent> <C-p> :GFiles<CR>
+nnoremap <silent> <M-p> :Buffers<CR>
+
+" let g:fzf_preview_window='right:60%'
+" let g:fzf_preview_window='window'
+nnoremap <silent> <Leader>f :Rg<Space>
+xnoremap <silent> <Leader>f :<C-U>Rg <Space><C-R><C-W><CR>
+
+let $FZF_DEFAULT_OPTS .= ' --inline-info --layout=reverse'
+let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8, 'yoffset': '0', 'border': 'rounded' } }	
+
+function! s:list_buffers()
+  redir => list
+  silent ls
+  redir END
+  return split(list, "\n")
+endfunction
+
+function! s:delete_buffers(lines)
+  execute 'bwipeout' join(map(a:lines, {_, line -> split(line)[0]}))
+endfunction
+
+command! BD call fzf#run(fzf#wrap({
+  \ 'source': s:list_buffers(),
+  \ 'sink*': { lines -> s:delete_buffers(lines) },
+  \ 'options': '--multi --reverse --bind ctrl-a:select-all+accept'
+\ }))
+
+
+" Configure airline
+" let g:airline#extensions#tabline#enabled = 1
+" let g:airline_powerline_fonts = 1
+"
+" Configure fugitive easier merge
+nmap <leader>gf :diffget //2<CR>
+nmap <leader>gh :diffget //3<CR>
+nmap <leader>gs :G<CR>
+
+" Configure Rust
+let g:rustfmt_autosave = 1
