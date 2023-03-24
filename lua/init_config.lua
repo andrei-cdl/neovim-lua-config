@@ -27,3 +27,6 @@ vim.keymap.set("n", "<cr>", "", {silent = true, noremap = true})
 -- vim.keymap.set("n", "C-SpaceC-f", ":Telescope find_filesCR")
 vim.keymap.set("n", "gt", ":Telescope diagnosticsCR")
 vim.keymap.set("n", "gd", ":Telescope lsp_definitionsCR")
+
+-- git linker, copy github urls quickly
+-- default leader<gy>

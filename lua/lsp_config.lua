@@ -29,9 +29,17 @@ local on_attach = function(client, bufnr)
   vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
   vim.keymap.set('n', '<space>af', vim.lsp.buf.code_action, bufopts)
   vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-  vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
-end
-
+  vim.keymap.set('n', '<space>f', function()
+	  for _, client in ipairs(vim.lsp.get_active_clients()) do
+		  if client.name == "eslint" then
+			vim.cmd.EslintFixAll()
+			return
+		  end
+	  end
+	  vim.lsp.buf.format { async = true }
+	end,
+	  bufopts)
+  end
 local lsp_flags = {
   -- This is the default in Nvim 0.7+
   debounce_text_changes = 150,
@@ -124,3 +132,12 @@ require('lspconfig')['gopls'].setup{
     flags = lsp_flags,
 		capabilities = capabilities,
 	}
+require('lspconfig')['eslint'].setup{
+	 on_attach = on_attach
+ }
+
+vim.api.nvim_create_autocmd('BufWritePre', {
+  pattern = { '*.tsx', '*.ts', '*.jsx', '*.js' },
+  command = 'silent! EslintFixAll',
+  group = vim.api.nvim_create_augroup('MyAutocmdsJavaScripFormatting', {}),
+})

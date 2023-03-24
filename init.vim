@@ -75,9 +75,13 @@ set colorcolumn=120
 set ttimeoutlen=5
 
 " tab indentation
-set sts=2
-set ts=2
-set sw=2
+set sts=4
+set ts=4
+set sw=4
+"set expandtab
+
+" fold
+" set foldmethod
 
 " comment this to use tabs instead of spaces > set expandtab
 set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
@@ -89,7 +93,7 @@ set completeopt=menu,menuone,noselect
 " Load lua plugins and configuration
 :lua require('lsp_config')
 :lua require('telescope_config')
-:lua require('shade_config')
+":lua require('shade_config')
 :lua require('nvimtree_config')
 :lua require('gitlinker_config')
 :lua require('git_config')
