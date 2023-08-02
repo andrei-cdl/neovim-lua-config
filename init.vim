@@ -16,6 +16,9 @@ Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'sainnhe/gruvbox-material'
 Plug 'sainnhe/edge'
 
+" theme
+Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
+
 " Git
 Plug 'tpope/vim-fugitive'
 
@@ -32,6 +35,7 @@ Plug 'sunjon/shade.nvim'
 " easily share github links, show changes
 Plug 'ruifm/gitlinker.nvim'
 Plug 'lewis6991/gitsigns.nvim'
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 
 " Workspace issues view / quickfix view
 Plug 'folke/trouble.nvim'
@@ -41,6 +45,10 @@ Plug 'terrortylor/nvim-comment'
 
 " tmux movement
 Plug 'christoomey/vim-tmux-navigator'
+
+Plug 'vimwiki/vimwiki'
+Plug 'tools-life/taskwiki'
+Plug 'itchyny/lightline.vim'
 call plug#end()
 
 " TODO: move to lua files
@@ -54,7 +62,13 @@ endif
 let g:edge_style = 'neon'
 let g:edge_better_performance = 1
 
-colorscheme gruvbox-material
+set background=light
+colorscheme catppuccin-latte "gruvbox-material
+
+let g:lightline = {
+			\ 'colorscheme': 'one',
+			\ }
+
 
 " setup copy to standard clipboard
 vmap <leader>y "+y
@@ -73,6 +87,19 @@ set cursorline
 set scrolloff=10
 set colorcolumn=120
 set ttimeoutlen=5
+set guifont=FiraCode_Nerd_Font_Mono_SemBd:h10:cANSI
+set clipboard+=unnamedplus
+
+"wikivim configuration
+set nocompatible
+filetype plugin on
+
+" Disable folding for Vimwiki files
+augroup DisableVimwikiFolds
+  autocmd!
+  autocmd BufRead *.wiki setlocal nofoldenable
+augroup END
+
 
 " tab indentation
 set sts=4
