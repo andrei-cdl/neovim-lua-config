@@ -136,6 +136,10 @@ require('lspconfig')['eslint'].setup{
 	 on_attach = on_attach
  }
 
+require('lspconfig')['svelte'].setup{
+ on_attach = on_attach
+}
+
 vim.api.nvim_create_autocmd('BufWritePre', {
   pattern = { '*.tsx', '*.ts', '*.jsx', '*.js' },
   command = 'silent! EslintFixAll',

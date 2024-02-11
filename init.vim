@@ -28,7 +28,7 @@ Plug 'nvim-tree/nvim-tree.lua'
 
 " telescope
 Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
+Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.4' }
 
 Plug 'sunjon/shade.nvim'
 
@@ -63,7 +63,7 @@ let g:edge_style = 'neon'
 let g:edge_better_performance = 1
 
 set background=light
-colorscheme catppuccin-latte "gruvbox-material
+colorscheme  catppuccin-mocha "gruvbox-material catppuccin-latte
 
 let g:lightline = {
 			\ 'colorscheme': 'one',
